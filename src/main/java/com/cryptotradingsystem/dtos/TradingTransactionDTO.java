@@ -1,9 +1,13 @@
 package com.cryptotradingsystem.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
 
 public class TradingTransactionDTO {
     private String action;
+    @JsonFormat
+            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Timestamp createdDate;
     private String cryptoPair;
 
