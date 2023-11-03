@@ -14,10 +14,12 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,39 +31,17 @@ public class CustomRestTemplateConfiguration {
     @Value("${trust.store.password}")
     private String trustStorePassword;
 
-    /**
-     * Build rest template whichs skip SSL verification (only for testing)
-     *
-     * @return
-     * @throws KeyManagementException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws CertificateException
-     * @throws MalformedURLException
-     * @throws IOException
-     */
     @Bean
     public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
             CertificateException, MalformedURLException, IOException {
 
+        SSLContext sslContext = new SSLContextBuilder()
+                .loadTrustMaterial(trustStore.getURL(), trustStorePassword.toCharArray()).build();
+        SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
-        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                .loadTrustMaterial(null, acceptingTrustStrategy)
-                .build();
-
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLSocketFactory(csf)
-                .build();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory();
-
-        requestFactory.setHttpClient(httpClient);
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
-        return restTemplate;
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
+        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        return new RestTemplate(requestFactory);
     }
+
 }
