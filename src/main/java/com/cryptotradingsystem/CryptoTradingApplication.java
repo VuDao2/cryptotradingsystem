@@ -17,7 +17,7 @@ public class CryptoTradingApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(CryptoTradingApplication.class, args);
 
-        populateData(context.getBean(UserRepository.class), context.getBean(CryptoWalletRepository.class));
+//        populateData(context.getBean(UserRepository.class), context.getBean(CryptoWalletRepository.class));
     }
 
 

@@ -1,0 +1,10 @@
+INSERT INTO crypto_user (id, created_date, updated_date, user_name) VALUES
+(1,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(),'admin'),
+(2,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(),'user1'),
+(3,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(),'user2');
+
+INSERT INTO crypto_wallet (id, created_date, updated_date, balance, crypto_unit, user_id) VALUES
+(1,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(), 100000,2,1),
+(2,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(), 50000,2,2),
+(3,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(), 50000,2,3);
+
